@@ -32,9 +32,9 @@ const combineSVGFiles = async (inputFiles, outputFile) => {
   const firstSVGDetails = extractSVGDetails(firstSVGContent);
 
   // Set the width and height of the combined SVG based on the first SVG
-  const { width, height } = firstSVGDetails.attributes;
+  /*const { width, height } = firstSVGDetails.attributes;
   if (width) combinedContent += ` width="${width}"`;
-  if (height) combinedContent += ` height="${height}"`;
+  if (height) combinedContent += ` height="${height}"`;*/
 
   combinedContent += '>';
 
@@ -44,7 +44,7 @@ const combineSVGFiles = async (inputFiles, outputFile) => {
     let { innerContent } = extractSVGDetails(svgContent);
 
     if (i === 1) { // Apply opacity to the second SVG file
-      innerContent = `<g opacity="0.1">${innerContent}</g>`;
+      innerContent = `<g opacity="0.3">${innerContent}</g>`;
     }
 
     combinedContent += innerContent;
@@ -56,7 +56,7 @@ const combineSVGFiles = async (inputFiles, outputFile) => {
 };
 
 // Example usage
-const inputFiles = ['svg1.svg', 'svg2.svg'];
+const inputFiles = ['svg1.svg', 'Artboard 1.svg'];
 const outputFile = path.join(__dirname, 'combined.svg');
 
 combineSVGFiles(inputFiles, outputFile).catch(console.error);
