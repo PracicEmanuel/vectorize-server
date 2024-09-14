@@ -12,7 +12,7 @@ const fsExtra = require('fs-extra');
 
 
 app.use(cors())
-// Middleware to parse JSON bodies
+
 app.use(bodyParser.json({ limit: '100mb' }));
 
 const extractSVGDetails = (svgContent) => {
@@ -41,12 +41,6 @@ const combineSVGFiles = async (inputFiles, outputFile) => {
 
   const firstSVGPath = path.join(__dirname, inputFiles[0]);
   const firstSVGContent = await fsExtra.readFile(firstSVGPath, 'utf8');
-  const firstSVGDetails = extractSVGDetails(firstSVGContent);
-
-  // Set the width and height of the combined SVG based on the first SVG
-  /*const { width, height } = firstSVGDetails.attributes;
-  if (width) combinedContent += ` width="${width}"`;
-  if (height) combinedContent += ` height="${height}"`;*/
 
   combinedContent += '>';
 
@@ -91,7 +85,7 @@ app.post('/upload', (req, res) => {
     request.post({
       url: 'https://vectorizer.ai/api/v1/vectorize?mode=test',
       formData: {
-        image: fs.createReadStream('uploaded_image.png'), // TODO: Replace with your image
+        image: fs.createReadStream('uploaded_image.png'),
       },
       auth: {user: process.env.API_USER , pass: process.env.API_KEY},
       followAllRedirects: true,
@@ -104,18 +98,20 @@ app.post('/upload', (req, res) => {
       } else {
         console.log(body)
         fs.writeFileSync("result.svg", body);
-        /*const inputFiles = ['result.svg', 'Artboard 1.svg'];
+        const inputFiles = ['result.svg', 'Artboard 1.svg'];
         const outputFile = path.join(__dirname, 'combined.svg');
 
-        combineSVGFiles(inputFiles, outputFile).catch(console.error);*/
-        res.sendFile(path.join(__dirname, "result.svg"), (err)=>{
-          if(err){
-            console.error('Error sending file:', err);
-            res.status(500).send('Error sending file');
-          }else {
-            console.log('File sent successfully');
-          }
-        })
+        combineSVGFiles(inputFiles, outputFile).then(()=>{
+          res.sendFile(path.join(__dirname, "combined.svg"), (err)=>{
+            if(err){
+              console.error('Error sending file:', err);
+              res.status(500).send('Error sending file');
+            }else {
+              console.log('File sent successfully');
+            }
+          })
+        });
+        
       }
     });
     
